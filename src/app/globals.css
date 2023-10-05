@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::view-transition-new(message*),
+::view-transition-old(message*) {
+    pointer-events: none;
+    animation-duration: .1s;
+}
