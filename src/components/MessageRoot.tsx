@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Message from './Message'
 
-export default function MessageRoot({ messages }: { messages: {text: string, id: number}[] }) {
+export default function MessageRoot({ messages, isRemoving }: { messages: { text: string | React.ReactElement, id: number }[], isRemoving: boolean }) {
     const [mounted, setMounted] = useState(false)
     const messageRoot = globalThis.document && document.getElementById('message-root')
 
@@ -18,8 +18,8 @@ export default function MessageRoot({ messages }: { messages: {text: string, id:
     if (!mounted || !messageRoot) return null
 
     return createPortal(
-        <div className='fixed inset-0 w-screen h-screen flex justify-start items-center gap-4 flex-col p-4 z-10'
-            style={{ pointerEvents: 'none' }}
+        <div className={`fixed inset-0 w-screen h-screen flex justify-start items-center flex-col z-10 ${isRemoving ? '-translate-y-[44px] transition-transform duration-300 ease-in-out' : ''}`}
+            style={{ pointerEvents: 'none', animationFillMode: 'forwards' }}
         >
             {
                 messages.map(message =>

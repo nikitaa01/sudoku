@@ -1,12 +1,16 @@
-import getSudokuData from "@/services/sudokuBoard"
 import Game from "@/components/Game"
+import getSudokuData from "@/services/sudokuBoard"
+import SetServerRestartGame from "./SetServerRestartGame"
 
 export default async function ServerGame({ game }: { game?: string }) {
-    const query = new URLSearchParams()
-    query.set('game', game ?? 'none')
-    const res = await getSudokuData(query)
+    const res = await getSudokuData({ game })
     if (!res) return null
-    const { board, resolvedBoard, boardStr } = res
+    const { board, resolvedBoard, boardStr, difficulty } = res
 
-    return <Game board={board} resolvedBoard={resolvedBoard} boardStr={boardStr} />
+    return (
+        <>
+            <SetServerRestartGame />
+            <Game board={board} resolvedBoard={resolvedBoard} boardStr={boardStr} difficulty={difficulty} />
+        </>
+    )
 }

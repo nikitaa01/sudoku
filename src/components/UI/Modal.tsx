@@ -1,8 +1,8 @@
 "use client"
 
-import { createPortal } from "react-dom"
-import { useEffect, useState } from "react"
 import useDebounce from "@/hooks/useDebounce"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 
 export default function Modal({ children, open, onCancel }: { children: React.ReactNode | string, open: boolean, onCancel: () => void }) {
     const [mounted, setMounted] = useState(false)
@@ -30,8 +30,8 @@ export default function Modal({ children, open, onCancel }: { children: React.Re
 
     return createPortal(
         <>
-            <div id="modal-bg" onClick={handleClick} className={`z-20 bg-black/30 fixed inset-0 w-screen h-screen flex justify-center items-center backdrop-blur-[2px] cursor-pointer ${open ? 'animate-modal-bg-appear' : 'animate-modal-bg-disappear'}`}>
-                <div id="modal-content" className={`m-10 lg:w-3/6 bg-white border w-fit py-5 px-8 rounded-sm flex justify-center items-center cursor-default ${open ? 'animate-modal-content-appear' : 'animate-modal-content-disappear'}`}>
+            <div id="modal-bg" onClick={handleClick} className={`z-20 bg-black/30 fixed inset-0 w-screen h-screen flex justify-center items-center backdrop-blur-[2px] pb-10 cursor-pointer ${open ? 'animate-modal-bg-appear' : 'animate-modal-bg-disappear'}`}>
+                <div id="modal-content" className={`m-4 bg-white border py-5 px-8 rounded-xl flex justify-center items-center cursor-default ${open ? 'animate-modal-content-appear' : 'animate-modal-content-disappear'}`}>
                     {children}
                 </div>
             </div>

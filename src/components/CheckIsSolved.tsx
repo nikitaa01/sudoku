@@ -1,30 +1,23 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEndGameModalContext } from "@/context/EndGameModal"
+import { useMessageContext } from "@/context/MessageContext"
+import { useRestartGameContext } from "@/context/RestartGame"
 import { useSudokuGameStateContext } from "@/context/SudokuGameState"
 import confetti from 'canvas-confetti'
-import { useMessageContext } from "@/context/MessageContext"
-import { useRouter } from "next/navigation"
-import { useEndGameModalContext } from "@/context/EndGameModal"
+import { useEffect } from "react"
 import ModalLoseGame from "./ModalLoseGame"
 import ModalWinGame from "./ModalWinGame"
 
-export default function CheckIsSolved({ onCancelModal }: { onCancelModal?: () => void }) {
+export default function CheckIsSolved() {
+    const { restartGame } = useRestartGameContext()
     const { isSolved } = useSudokuGameStateContext()
     const { setMessages } = useMessageContext()
-    const { refresh } = useRouter()
-
     const { setModalData } = useEndGameModalContext()
-    
-    const handleCancel = () => {
-        if (onCancelModal) return onCancelModal()
-        // TODO reset the game
-        const newUrl = `${window.location.pathname}`
-        window.history.replaceState(null, "", newUrl)
-        document.cookie = 'regenerateClient=true'
-        refresh()
-    }
 
+    const handleCancel = () => {
+        restartGame('easy')
+    }
     useEffect(() => {
         if (isSolved === 0) return
         setMessages([])

@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react"
-import SudokuData from "@/types/sudokuData"
 import getSudokuData from "@/services/sudokuBoard"
+import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
+import SudokuData from "@/types/sudokuData"
+import { useEffect, useState } from "react"
 
-export default function useFetchSudokuData() {
+export default function useFetchSudokuData(defaultDifficulty: SudokuBoardDifficulty = 'easy') {
     const [sudokuData, setSudokuData] = useState<null | SudokuData & { boardStr: string }>(null)
 
-    const revalidate = () => {
+    const revalidate = (difficulty: SudokuBoardDifficulty) => {
         setSudokuData(null)
-        getSudokuData(new URLSearchParams()).then(res => {
+        getSudokuData({ difficulty }).then(res => {
             if (!res) return null
             setSudokuData(res)
         })
     }
 
     useEffect(() => {
-        revalidate()
-    }, [])
+        revalidate(defaultDifficulty)
+    }, [defaultDifficulty])
 
     return { sudokuData, revalidate, loading: !sudokuData }
 }

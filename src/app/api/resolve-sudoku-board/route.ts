@@ -1,7 +1,7 @@
+import { generateSudokuData, resolveSudokuData } from "@/controllers/sudokuBoard"
 import { NextRequest, NextResponse } from "next/server"
 import SudokuBoardDifficulty from "../../../types/sudokuBoardDifficulty"
 import SudokuData from "../../../types/sudokuData"
-import { resolveSudokuData, generateSudokuData } from "@/controllers/sudokuBoard"
 
 export function GET(req: NextRequest) {
     const game = req.nextUrl.searchParams.get('game')
@@ -20,5 +20,6 @@ export function GET(req: NextRequest) {
         const generatedSudokuData = generateSudokuData(difficulty)
         sudokuData = generatedSudokuData
     }
-    return NextResponse.json({...sudokuData})
+    sudokuData
+    return NextResponse.json({ ...sudokuData })
 }

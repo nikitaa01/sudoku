@@ -1,8 +1,8 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from "react"
-
-// TODO: change is solved to -1, 0, 1 instead of true/false
+import { useRestartGameContext } from "./RestartGame"
+import { useSudokuActiveCellDataContext } from "./SudokuActiveCellData"
 
 interface SudokuGameStateContext {
     counter: { s: number, m: number },
@@ -11,6 +11,8 @@ interface SudokuGameStateContext {
     setErrors: React.Dispatch<React.SetStateAction<number>>,
     eachNumberLeft: number[],
     setEachNumberLeft: React.Dispatch<React.SetStateAction<number[]>>,
+    paused: boolean,
+    setPaused: React.Dispatch<React.SetStateAction<boolean>>,
     isSolved: -1 | 0 | 1,
     setIsSolved: React.Dispatch<React.SetStateAction<-1 | 0 | 1>>,
 }
@@ -22,6 +24,8 @@ const SudokuGameStateContext = createContext<SudokuGameStateContext>({
     setErrors: () => { },
     eachNumberLeft: [],
     setEachNumberLeft: () => { },
+    paused: false,
+    setPaused: () => { },
     isSolved: 0,
     setIsSolved: () => { },
 })
@@ -39,7 +43,7 @@ const SudokuGameStateContextProvider = ({ board, children }: {
     board: number[][],
     children: React.ReactNode,
 }) => {
-    const [eachNumberLeft, setEachNumberLeft] = useState<number[]>(() => {
+    const getInitialEachNumberLeft = () => {
         const countEachNumber = Array(9).fill(0)
         for (const row of board) {
             for (const item of row) {
@@ -49,13 +53,46 @@ const SudokuGameStateContextProvider = ({ board, children }: {
             }
         }
         return countEachNumber.map(item => 9 - item)
-    })
-    const [isSolved, setIsSolved] = useState<-1 | 0 | 1>(0)
+    }
+
+    const [eachNumberLeft, setEachNumberLeft] = useState<number[]>(getInitialEachNumberLeft)
+    const [isSolved, setIsSolved] = useState<-1 | 0 | 1>(0)
     const [counter, setCounter] = useState({ s: 0, m: 0 })
     const [errors, setErrors] = useState(0)
+    const [paused, setPaused] = useState(false)
+    const activeCellData = useSudokuActiveCellDataContext()
+    const { canRestart, setCanRestart } = useRestartGameContext()
 
     useEffect(() => {
-        if (isSolved) {
+        if (canRestart && (JSON.stringify(getInitialEachNumberLeft()) !== JSON.stringify(eachNumberLeft) || errors > 0)) {
+            setCanRestart(false)
+        }
+    }, [eachNumberLeft, errors, canRestart, setCanRestart])
+
+    useEffect(() => {
+        const handlePause = () => {
+            setPaused(true)
+        }
+        document.addEventListener('visibilitychange', handlePause)
+        window.addEventListener('blur', handlePause)
+    }, [])
+
+    useEffect(() => {
+        if (paused)
+            activeCellData.setData((prev) => {
+                return {
+                    ...prev,
+                    row: -1,
+                    col: -1,
+                    square: -1,
+                    num: -1,
+                    setValue: () => { },
+                }
+            })
+    }, [paused])
+
+    useEffect(() => {
+        if (isSolved || paused) {
             return
         }
         const interval = setInterval(async () => {
@@ -67,11 +104,11 @@ const SudokuGameStateContextProvider = ({ board, children }: {
             })
         }, 1000)
         return () => clearInterval(interval)
-    }, [isSolved])
+    }, [isSolved, paused])
 
 
     return (
-        <SudokuGameStateContext.Provider value={{ eachNumberLeft, setEachNumberLeft, isSolved, setIsSolved, counter, setCounter, errors, setErrors }}>
+        <SudokuGameStateContext.Provider value={{ eachNumberLeft, setEachNumberLeft, isSolved, setIsSolved, counter, setCounter, errors, setErrors, paused, setPaused }}>
             {children}
         </SudokuGameStateContext.Provider>
     )

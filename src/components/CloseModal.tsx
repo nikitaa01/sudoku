@@ -1,15 +1,15 @@
-import { useEffect } from 'react'
 import { useEndGameModalContext } from '@/context/EndGameModal'
+import { useEffect } from 'react'
 
 export default function CloseModal() {
     const { setModalData } = useEndGameModalContext()
 
     useEffect(() => {
-        setModalData({
+        setModalData(({ onCancel, modalChildren }) => ({
             open: false,
-            onCancel: () => { },
-            modalChildren: null,
-        })
+            onCancel,
+            modalChildren,
+        }))
     }, [setModalData])
 
     return null

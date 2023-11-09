@@ -1,9 +1,10 @@
-import exp from "constants"
 import Board from "./board"
+import SudokuBoardDifficulty from "./sudokuBoardDifficulty"
 
 type SudokuData = {
     board: Board
-    resolvedBoard: Board
+    resolvedBoard: Board,
+    difficulty: SudokuBoardDifficulty,
 }
 
 export default SudokuData

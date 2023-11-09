@@ -2,12 +2,12 @@
 
 import MessageRoot from "@/components/MessageRoot"
 import useMessage from "@/hooks/useMessage"
-import { createContext, useContext } from "react"
+import { ReactElement, createContext, useContext } from "react"
 
 interface MessageContext {
-    addMessage: (text: string, timeout?: number) => void,
-    messages: { text: string, id: number }[],
-    setMessages: React.Dispatch<React.SetStateAction<{ text: string; id: number; closing?: true; }[]>>
+    addMessage: (text: string | ReactElement, timeout?: number) => void,
+    messages: { text: string | ReactElement, id: number }[],
+    setMessages: React.Dispatch<React.SetStateAction<{ text: string | React.ReactElement; id: number; closing?: true; }[]>>
 }
 
 const MessageContext = createContext<MessageContext>({
@@ -27,10 +27,11 @@ const useMessageContext = () => {
 const MessageContextProvider = ({ children }: {
     children: React.ReactNode,
 }) => {
-    const { messages, addMessage, setMessages } = useMessage()
+    const { messages, addMessage, setMessages, isRemoving } = useMessage()
     return (
-        <MessageContext.Provider value={{addMessage, messages, setMessages}}>
+        <MessageContext.Provider value={{ addMessage, messages, setMessages }}>
             <MessageRoot
+                isRemoving={isRemoving}
                 messages={messages}
             />
             {children}

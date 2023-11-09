@@ -1,8 +1,9 @@
 'use client'
 
+import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
 import { useEffect } from "react"
 
-export default function UpdateSearchParams({ newSearchParams }: { newSearchParams: { game: string } }) {
+export default function UpdateSearchParams({ newSearchParams }: { newSearchParams: { game: string, difficulty: SudokuBoardDifficulty } }) {
     useEffect(() => {
         const searchParams = new URLSearchParams()
         Object.entries(newSearchParams).forEach(([key, value]) => {
@@ -10,7 +11,7 @@ export default function UpdateSearchParams({ newSearchParams }: { newSearchParam
         })
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`
-        window.history.replaceState(null, "", newUrl)
+        globalThis?.window?.history?.replaceState(null, "", newUrl)
     }, [newSearchParams])
 
     return null

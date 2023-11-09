@@ -1,13 +1,19 @@
 'use client'
 
-import { useEffect } from "react"
+import { useSudokuGameStateContext } from "@/context/SudokuGameState"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
+import PausedBanner from "./PausedBanner"
 
 export default function DiagonalDisplayGridAnimation() {
-    // TODO refractor to useRef 
+    const { paused } = useSudokuGameStateContext()
+    const [renderPausedBanner, setRenderPausedBanner] = useState(false)
 
     useEffect(() => {
+        if (!paused) {
+            setRenderPausedBanner(false)
+        }
         const gridCels = document.querySelectorAll('#grid-cells > div')
-
         const grid = [
             [1],
             [2, 10],
@@ -32,14 +38,36 @@ export default function DiagonalDisplayGridAnimation() {
             setTimeout(() => {
                 for (const num of row) {
                     const gridCel = gridCels[num - 1]
+                    if (paused) {
+                        gridCel.classList.remove('scale-100')
+                        gridCel.classList.remove('opacity-100')
+                        gridCel.classList.add('scale-0')
+                        gridCel.classList.add('opacity-0')
+                        continue
+                    }
                     gridCel.classList.remove('scale-0')
                     gridCel.classList.remove('opacity-0')
                     gridCel.classList.add('scale-100')
                     gridCel.classList.add('opacity-100')
                 }
+
             }, i++ * 15)
         }
-    }, [])
+        let renderPausedBannerTimeout: NodeJS.Timeout
+        if (paused) {
+            renderPausedBannerTimeout = setTimeout(() => {
+                setRenderPausedBanner(true)
+            }, i * 23)
+        }
+        return () => {
+            clearTimeout(renderPausedBannerTimeout)
+            setRenderPausedBanner(false)
+        }
+    }, [paused])
 
-    return null
+    const pausedBannerRoot = globalThis?.document?.getElementById('grid-cells')
+
+    return renderPausedBanner
+        ? createPortal(<PausedBanner />, pausedBannerRoot as HTMLElement)
+        : null
 }

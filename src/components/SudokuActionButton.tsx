@@ -1,22 +1,23 @@
 'use client'
 
+import { useMessageContext } from "@/context/MessageContext"
 import { useSudokuActiveCellDataContext } from "@/context/SudokuActiveCellData"
 import { useSudokuGameStateContext } from "@/context/SudokuGameState"
-import { useMessageContext } from "@/context/MessageContext"
 
 export default function SudokuActionButton({ value }: { value: number }) {
     const { correctValue, setValue, setData, num } = useSudokuActiveCellDataContext()
-    const { setEachNumberLeft, setIsSolved, eachNumberLeft, setErrors } = useSudokuGameStateContext()
+    const { setEachNumberLeft, setIsSolved, eachNumberLeft, setErrors, isSolved, paused } = useSudokuGameStateContext()
     const { addMessage } = useMessageContext()
 
     const handleClick = () => {
+        if (isSolved !== 0 || paused || correctValue === 0) {
+            return
+        }
         if (correctValue === num) {
-            // TODO message to user that the cell is already correct
             addMessage('The cell is already correct')
             return
         }
         if (value === correctValue) {
-            // TODO message to user that the cell is correct
             setValue && setValue(value)
             setData(prev => {
                 const { col, row, square, correctValue, setValue } = prev
@@ -28,10 +29,12 @@ export default function SudokuActionButton({ value }: { value: number }) {
                 if (newEachNumberLeft.every(item => item === 0)) {
                     setIsSolved(1)
                 }
+                if (newEachNumberLeft[value - 1] === 0) {
+                    addMessage(<>Congratulations! You have completed <strong>the number {value}</strong></>)
+                }
                 return newEachNumberLeft
             })
         } else {
-            // TODO message to user that the cell is incorrect
             addMessage('The cell is incorrect')
             setValue && setValue(value)
             setErrors(prev => {
@@ -44,14 +47,20 @@ export default function SudokuActionButton({ value }: { value: number }) {
         }
     }
 
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const { left, width } = e.currentTarget.getBoundingClientRect()
+        document.documentElement.style.setProperty('--left-action-button', `${left}px`)
+        document.documentElement.style.setProperty('--width-action-button', `${width}px`)
+        document.documentElement.style.setProperty('--opacity-action-button', '1')
+    }
+
     return (
-        <>
-            <button
-                onClick={handleClick}
-                className={`rounded-sm aspect-square w-full text-3xl md:text-4xl text-black/80 flex justify-center items-center font-extralight transition-all hover:bg-gray-200/80 hover:shadow ${eachNumberLeft[value - 1] === 0 ? 'invisible' : ''}`}
-            >
-                {value}
-            </button>
-        </>
+        <button
+            onClick={handleClick}
+            onMouseEnter={handleMouseEnter}
+            className={`aspect-square w-full text-3xl md:text-4xl text-black/80 flex justify-center items-center font-extralight transition-all ${eachNumberLeft[value - 1] === 0 ? 'invisible' : ''}`}
+        >
+            {value}
+        </button>
     )
 }

@@ -1,36 +1,44 @@
-import { useState } from 'react'
-
-declare global {
-    interface Document {
-        startViewTransition(callback: () => void): void
-    }
-}
+import { ReactElement, useEffect, useState } from 'react'
 
 const useMessage = () => {
-    const [messages, setMessages] = useState<{ text: string, id: number, closing?: true }[]>([])
-    const addMessage = (text: string, timeout = 3000) => {
+    const [messages, setMessages] = useState<{ text: string | ReactElement, id: number }[]>([])
+    const [closingQueue, setClosingQueue] = useState<number[]>([])
+    const [isRemoving, setIsRemoving] = useState(false)
+
+    const addMessage = (text: string | ReactElement, timeout = 3000) => {
         const message = { id: Date.now(), text }
 
         setMessages((prevMessages) => [...prevMessages, message])
 
         setTimeout(() => {
-            removeMessage(message.id)
+            setClosingQueue((prevClosingQueue) => [...prevClosingQueue, message.id])
         }, timeout)
     }
 
-    const removeMessage = (id: number) => {
-        if (!document.startViewTransition) {
-            setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id))
-            return
-        }
-        document.startViewTransition(() => {
-            const message = document.getElementById(`message-${id}`)
-            message?.style.setProperty('display', 'none')
-            setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id))
-        })
-    }
+    useEffect(() => {
+        if (closingQueue.length === 0 || isRemoving) return
 
-    return { messages, addMessage, removeMessage, setMessages }
+        setIsRemoving(true)
+        const removeNextMessage = async () => {
+            const messageId = closingQueue.shift() as number
+            await removeMessage(messageId)
+            setIsRemoving(false)
+        }
+
+        removeNextMessage()
+    }, [closingQueue, isRemoving])
+
+    const removeMessage = (id: number) => new Promise<void>(resolve => {
+        setTimeout(() => {
+            setMessages((prevMessages) =>
+                prevMessages
+                    .filter((message) => message.id !== id)
+            )
+            resolve()
+        }, 500)
+    })
+
+    return { messages, addMessage, removeMessage, setMessages, isRemoving }
 }
 
 export default useMessage

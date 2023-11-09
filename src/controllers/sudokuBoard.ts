@@ -1,13 +1,13 @@
-import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
-import Board from "@/types/board"
-import SudokuData from "@/types/sudokuData"
-import ApiResponse from "@/types/apiResponse"
 import numsPerAxle from "@/constants/numsPerAxle"
+import ApiResponse from "@/types/apiResponse"
+import Board from "@/types/board"
+import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
+import SudokuData from "@/types/sudokuData"
 
 const resolveSudokuData = (boardStr: string): ApiResponse<SudokuData & { boardStr: string }> => {
     try {
-        const { board, resolvedBoard } = JSON.parse(atob(boardStr))
-        return { ok: true, data: { board, resolvedBoard, boardStr } }
+        const { board, resolvedBoard, difficulty } = JSON.parse(atob(boardStr))
+        return { ok: true, data: { board, resolvedBoard, boardStr, difficulty } }
     } catch (e) {
         return { ok: false }
     }
@@ -24,7 +24,7 @@ const generateSudoku = (difficulty: SudokuBoardDifficulty = 'easy'): SudokuData 
     const board = JSON.parse(JSON.stringify(resolvedBoard))
     const numToRemove = {
         easy: 40,
-        medium: 53,
+        medium: 49,
         hard: 49,
         expert: 49,
     }[difficulty]
@@ -52,7 +52,7 @@ const generateSudoku = (difficulty: SudokuBoardDifficulty = 'easy'): SudokuData 
     if (solutions.length !== 1) {
         return generateSudoku(difficulty)
     }
-    return { resolvedBoard, board }
+    return { resolvedBoard, board, difficulty }
 }
 
 const generateResolvedSudoku = (): Board => {

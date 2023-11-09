@@ -1,9 +1,11 @@
+import NewGameForm from "./NewGameForm"
+
 export default function ModalLoseGame() {
     return (
-        <div className="flex flex-col justify-center items-center">
-            <h1 className="text-4xl font-bold">¡Lo sentimos!</h1>
-            <p className="text-xl font-semibold">Has perdido el sudoku</p>
-            <button className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">Aceptar</button>
+        <div className="flex flex-col gap-2 justify-center items-center">
+            <h1 className="font-bold text-xl text-black/80">Game Over</h1>
+            <p className="font-bold text-base text-gray-400 text-center">You have made 3 mistakes and lost this game</p>
+            <NewGameForm />
         </div>
     )
 }
