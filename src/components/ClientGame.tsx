@@ -6,6 +6,7 @@ import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
 import { useEffect } from "react"
 import ClearCookies from "./ClearCookies"
 import CloseModal from "./CloseModal"
+import GameSkeleton from "./GameSkeleton"
 
 export default function ClientGame({ difficulty }: { difficulty?: SudokuBoardDifficulty }) {
     const { setRestartGame } = useRestartGameContext()
@@ -15,7 +16,12 @@ export default function ClientGame({ difficulty }: { difficulty?: SudokuBoardDif
         setRestartGame(() => revalidate)
     }, [])
 
-    if (!sudokuData) return <CloseModal />
+    if (!sudokuData) return (
+        <>
+            <CloseModal />
+            <GameSkeleton />
+        </>
+    )
 
     return (
         <>
