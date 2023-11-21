@@ -13,8 +13,8 @@ export default function GameSkeleton() {
           <Mistakes />
           <Timer />
         </div>
-        <div id="grid-cells" className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-7 grid-rows-7 animate-pulse gap-2">
-          {new Array(49).fill(null).map(() => (
+        <div id="grid-cells" className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4">
+          {new Array(9).fill(null).map(() => (
             <div
               key={Math.random()}
               className="bg-gray-300 rounded-md"
