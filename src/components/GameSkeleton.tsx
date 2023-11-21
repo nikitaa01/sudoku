@@ -14,12 +14,25 @@ export default function GameSkeleton() {
           <Timer />
         </div>
         <div id="grid-cells" className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4">
-          {new Array(9).fill(null).map(() => (
-            <div
-              key={Math.random()}
-              className="bg-gray-300 rounded-md"
-            />
-          ))}
+          {new Array(9).fill(null).map((_, i) => {
+            const colors = {
+              0: 'bg-blue-100',
+              1: 'bg-blue-50',
+              2: 'bg-blue-200',
+              3: 'bg-blue-200',
+              4: 'bg-blue-100',
+              5: 'bg-blue-50',
+              6: 'bg-blue-50',
+              7: 'bg-blue-200',
+              8: 'bg-blue-100',
+            }
+            return (
+              <div
+                key={Math.random()}
+                className={`${colors[i]} rounded-md`}
+              />
+            )
+          })}
         </div>
         <SudokuActionButtonsRoot />
       </div>
