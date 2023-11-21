@@ -29,6 +29,7 @@ export default function GameSkeleton() {
             return (
               <div
                 key={Math.random()}
+                // @ts-ignore
                 className={`${colors[i]} rounded-md`}
               />
             )
