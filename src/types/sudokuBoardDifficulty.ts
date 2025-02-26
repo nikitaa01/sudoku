@@ -1,3 +1,3 @@
-type SudokuBoardDifficulty = 'easy' | 'medium' | 'hard' | 'expert'
+type SudokuBoardDifficulty = "easy" | "medium" | "hard" | "expert"
 
 export default SudokuBoardDifficulty

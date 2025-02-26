@@ -7,7 +7,7 @@ export default function useRestartGame() {
     const restart = (difficulty: SudokuBoardDifficulty) => {
         const newUrl = `${window.location.pathname}`
         globalThis?.window?.history?.replaceState(null, "", newUrl)
-        document.cookie = 'regenerateClient=true; path=/'
+        // eslint-disable-next-line react-compiler/react-compiler
         document.cookie = `difficulty=${difficulty}; path=/`
         refresh()
     }
