@@ -1,12 +1,21 @@
-import { generateSudokuData, resolveSudokuData } from "@/controllers/sudokuBoard"
+import {
+    generateSudokuData,
+    resolveSudokuData,
+} from "@/controllers/sudokuBoard"
 import { NextRequest, NextResponse } from "next/server"
 import SudokuBoardDifficulty from "../../../types/sudokuBoardDifficulty"
 import SudokuData from "../../../types/sudokuData"
 
 export function GET(req: NextRequest) {
-    const game = req.nextUrl.searchParams.get('game')
-    const difficultyProp = req.nextUrl.searchParams.get('difficulty')
-    const difficulty: SudokuBoardDifficulty = ['easy', 'medium', 'hard'].includes(difficultyProp ?? '') ? difficultyProp as SudokuBoardDifficulty : 'easy'
+    const game = req.nextUrl.searchParams.get("game")
+    const difficultyProp = req.nextUrl.searchParams.get("difficulty")
+    const difficulty: SudokuBoardDifficulty = [
+        "easy",
+        "medium",
+        "hard",
+    ].includes(difficultyProp ?? "")
+        ? (difficultyProp as SudokuBoardDifficulty)
+        : "easy"
     let sudokuData: SudokuData
     if (game) {
         const resolveSudokuDataRes = resolveSudokuData(game)
@@ -20,6 +29,5 @@ export function GET(req: NextRequest) {
         const generatedSudokuData = generateSudokuData(difficulty)
         sudokuData = generatedSudokuData
     }
-    sudokuData
     return NextResponse.json({ ...sudokuData })
 }

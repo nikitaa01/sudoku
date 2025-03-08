@@ -13,7 +13,7 @@ const resolveSudokuData = (
             ok: true,
             data: { board, resolvedBoard, boardStr, difficulty },
         }
-    } catch (e) {
+    } catch {
         return { ok: false }
     }
 }
@@ -164,7 +164,7 @@ export const getSudokuData = ({
     difficulty: SudokuBoardDifficulty
     game?: string
 }) => {
-    let sudokuData: SudokuData
+    let sudokuData: SudokuData & { boardStr: string }
     if (game) {
         const resolveSudokuDataRes = resolveSudokuData(game)
         if (!resolveSudokuDataRes.ok) {

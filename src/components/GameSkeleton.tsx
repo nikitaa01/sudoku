@@ -27,11 +27,15 @@ export default function GameSkeleton() {
                             7: "bg-blue-200",
                             8: "bg-blue-100",
                         }
+
+                        if (i > 8 || i < 0) return null
+
+                        const index = i as keyof typeof colors
+
                         return (
                             <div
                                 key={i}
-                                // @ts-ignore
-                                className={`${colors[i]} rounded-md`}
+                                className={`${colors[index]} rounded-md`}
                             />
                         )
                     })}
