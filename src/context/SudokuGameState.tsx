@@ -43,7 +43,7 @@ const SudokuGameStateContextProvider = ({
     board: number[][]
     children: React.ReactNode
 }) => {
-    const getInitialEachNumberLeft = () => {
+    const getInitialEachNumberLeft = (board: number[][]) => {
         const countEachNumber = Array(9).fill(0)
         for (const row of board) {
             for (const item of row) {
@@ -55,8 +55,8 @@ const SudokuGameStateContextProvider = ({
         return countEachNumber.map((item) => 9 - item)
     }
 
-    const [eachNumberLeft, setEachNumberLeft] = useState<number[]>(
-        getInitialEachNumberLeft
+    const [eachNumberLeft, setEachNumberLeft] = useState<number[]>(() =>
+        getInitialEachNumberLeft(board)
     )
     const [isSolved, setIsSolved] = useState<-1 | 0 | 1>(0)
     const [errors, setErrors] = useState(0)
@@ -65,7 +65,7 @@ const SudokuGameStateContextProvider = ({
     const { canRestart, setCanRestart } = useRestartGameContext()
 
     useEffect(() => {
-        setEachNumberLeft(getInitialEachNumberLeft())
+        setEachNumberLeft(getInitialEachNumberLeft(board))
         setIsSolved(0)
         setErrors(0)
         setPaused(false)
@@ -74,13 +74,13 @@ const SudokuGameStateContextProvider = ({
     useEffect(() => {
         if (
             canRestart &&
-            (JSON.stringify(getInitialEachNumberLeft()) !==
+            (JSON.stringify(getInitialEachNumberLeft(board)) !==
                 JSON.stringify(eachNumberLeft) ||
                 errors > 0)
         ) {
             setCanRestart(false)
         }
-    }, [eachNumberLeft, errors, canRestart, setCanRestart])
+    }, [eachNumberLeft, errors, canRestart, setCanRestart, board])
 
     useEffect(() => {
         const handlePause = () => {
