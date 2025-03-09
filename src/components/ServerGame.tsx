@@ -2,6 +2,7 @@ import Game from "@/components/Game"
 import { getSudokuData } from "@/controllers/sudokuBoard"
 import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
 import { cookies } from "next/headers"
+import GameSkeleton from "./GameSkeleton"
 
 export default async function ServerGame() {
     const cookiesStore = await cookies()
@@ -13,7 +14,7 @@ export default async function ServerGame() {
         game: gameCookie,
         difficulty: difficultyCookie ?? "easy",
     })
-    if (!res) return null
+    if (!res) return <GameSkeleton />
     const { board, resolvedBoard, boardStr, difficulty } = res
 
     return (
