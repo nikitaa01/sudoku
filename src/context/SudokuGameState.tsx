@@ -5,8 +5,6 @@ import { useRestartGameContext } from "./RestartGame"
 import { useSudokuActiveCellDataContext } from "./SudokuActiveCellData"
 
 interface SudokuGameStateContext {
-    counter: { s: number; m: number }
-    setCounter: React.Dispatch<React.SetStateAction<{ s: number; m: number }>>
     errors: number
     setErrors: React.Dispatch<React.SetStateAction<number>>
     eachNumberLeft: number[]
@@ -18,8 +16,6 @@ interface SudokuGameStateContext {
 }
 
 const SudokuGameStateContext = createContext<SudokuGameStateContext>({
-    counter: { s: 0, m: 0 },
-    setCounter: () => {},
     errors: 0,
     setErrors: () => {},
     eachNumberLeft: [],
@@ -63,7 +59,6 @@ const SudokuGameStateContextProvider = ({
         getInitialEachNumberLeft
     )
     const [isSolved, setIsSolved] = useState<-1 | 0 | 1>(0)
-    const [counter, setCounter] = useState({ s: 0, m: 0 })
     const [errors, setErrors] = useState(0)
     const [paused, setPaused] = useState(false)
     const activeCellData = useSudokuActiveCellDataContext()
@@ -72,7 +67,6 @@ const SudokuGameStateContextProvider = ({
     useEffect(() => {
         setEachNumberLeft(getInitialEachNumberLeft())
         setIsSolved(0)
-        setCounter({ s: 0, m: 0 })
         setErrors(0)
         setPaused(false)
     }, [board])
@@ -108,20 +102,6 @@ const SudokuGameStateContextProvider = ({
             }))
     }, [paused])
 
-    useEffect(() => {
-        if (isSolved || paused) return
-
-        const interval = setInterval(() => {
-            setCounter((prev) =>
-                prev.s === 59
-                    ? { s: 0, m: prev.m + 1 }
-                    : { s: prev.s + 1, m: prev.m }
-            )
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [isSolved, paused])
-
     return (
         <SudokuGameStateContext.Provider
             value={{
@@ -129,8 +109,6 @@ const SudokuGameStateContextProvider = ({
                 setEachNumberLeft,
                 isSolved,
                 setIsSolved,
-                counter,
-                setCounter,
                 errors,
                 setErrors,
                 paused,

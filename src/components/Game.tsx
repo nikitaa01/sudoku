@@ -7,6 +7,7 @@ import { EndGameModalContextProvider } from "@/context/EndGameModal"
 import { MessageContextProvider } from "@/context/MessageContext"
 import { SudokuActiveCellDataContextProvider } from "@/context/SudokuActiveCellData"
 import { SudokuGameStateContextProvider } from "@/context/SudokuGameState"
+import { SudokuTimerContextProvider } from "@/context/SudokuTimer"
 import SudokuData from "@/types/sudokuData"
 import { GameGrid } from "./GameGrid"
 import { SetRestartingFalse } from "./SetRestartingFalse"
@@ -23,42 +24,48 @@ export default function Game({
             <EndGameModalContextProvider>
                 <SudokuActiveCellDataContextProvider board={board}>
                     <SudokuGameStateContextProvider board={board}>
-                        <div className="flex flex-col">
-                            <div className="flex justify-between py-2">
-                                <Mistakes />
-                                <Timer />
-                            </div>
-                            <GameGrid>
-                                <div
-                                    id="grid-cells"
-                                    className="grid grid-cols-9 grid-rows-9 relative"
-                                >
-                                    {board.map((row, rowIndex) =>
-                                        row.map((item, colIndex) => (
-                                            <SudokuCell
-                                                key={rowIndex * 9 + colIndex}
-                                                index={rowIndex * 9 + colIndex}
-                                                row={rowIndex}
-                                                col={colIndex}
-                                                value={item}
-                                                correctValue={
-                                                    resolvedBoard[rowIndex][
-                                                        colIndex
-                                                    ]
-                                                }
-                                                board={board}
-                                            />
-                                        ))
-                                    )}
+                        <SudokuTimerContextProvider>
+                            <div className="flex flex-col">
+                                <div className="flex justify-between py-2">
+                                    <Mistakes />
+                                    <Timer />
                                 </div>
-                            </GameGrid>
-                            <MessageContextProvider>
-                                <SudokuActionButtonsRoot />
-                                <CheckIsSolved />
-                            </MessageContextProvider>
-                        </div>
-                        <KeyboardListener />
-                        <DiagonalDisplayGridAnimation board={board} />
+                                <GameGrid>
+                                    <div
+                                        id="grid-cells"
+                                        className="grid grid-cols-9 grid-rows-9 relative"
+                                    >
+                                        {board.map((row, rowIndex) =>
+                                            row.map((item, colIndex) => (
+                                                <SudokuCell
+                                                    key={
+                                                        rowIndex * 9 + colIndex
+                                                    }
+                                                    index={
+                                                        rowIndex * 9 + colIndex
+                                                    }
+                                                    row={rowIndex}
+                                                    col={colIndex}
+                                                    value={item}
+                                                    correctValue={
+                                                        resolvedBoard[rowIndex][
+                                                            colIndex
+                                                        ]
+                                                    }
+                                                    board={board}
+                                                />
+                                            ))
+                                        )}
+                                    </div>
+                                </GameGrid>
+                                <MessageContextProvider>
+                                    <SudokuActionButtonsRoot />
+                                    <CheckIsSolved />
+                                </MessageContextProvider>
+                            </div>
+                            <KeyboardListener />
+                            <DiagonalDisplayGridAnimation board={board} />
+                        </SudokuTimerContextProvider>
                     </SudokuGameStateContextProvider>
                 </SudokuActiveCellDataContextProvider>
             </EndGameModalContextProvider>
