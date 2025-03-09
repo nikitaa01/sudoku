@@ -13,13 +13,17 @@ import { GameGrid } from "./GameGrid"
 import { SetRestartingFalse } from "./SetRestartingFalse"
 import SudokuActionButtonsRoot from "./SudokuActionButtonsRoot"
 import SudokuCell from "./SudokuCell"
+import { UpdateCookies } from "./UpdateCookies"
 
-export default function Game({
+export default async function Game({
     board,
+    boardStr,
+    difficulty,
     resolvedBoard,
 }: SudokuData & { boardStr: string }) {
     return (
         <main className="w-screen h-dvh flex justify-center items-center">
+            <UpdateCookies game={boardStr} difficulty={difficulty} />
             <SetRestartingFalse board={board} />
             <EndGameModalContextProvider>
                 <SudokuActiveCellDataContextProvider board={board}>
@@ -57,6 +61,9 @@ export default function Game({
                                             ))
                                         )}
                                     </div>
+                                    <DiagonalDisplayGridAnimation
+                                        board={board}
+                                    />
                                 </GameGrid>
                                 <MessageContextProvider>
                                     <SudokuActionButtonsRoot />
@@ -64,7 +71,6 @@ export default function Game({
                                 </MessageContextProvider>
                             </div>
                             <KeyboardListener />
-                            <DiagonalDisplayGridAnimation board={board} />
                         </SudokuTimerContextProvider>
                     </SudokuGameStateContextProvider>
                 </SudokuActiveCellDataContextProvider>

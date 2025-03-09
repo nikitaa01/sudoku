@@ -43,24 +43,23 @@ const RestartGameContextProvider = ({
 
     const router = useRouter()
     const restartGame: RestartGameContext["restartGame"] = (difficulty) => {
-        if (document) {
-            // eslint-disable-next-line react-compiler/react-compiler
-            document.cookie = `difficulty=${difficulty}; path=/`
-        }
+        const difficultyCookie = `difficulty=${difficulty}`
+        // eslint-disable-next-line react-compiler/react-compiler
+        document.cookie = `${difficultyCookie}; path=/`
+        document.cookie = `game=; path=/`
 
         setRestarting(true)
         router.refresh()
     }
 
     const [difficulty, setDifficulty] = useState<SudokuBoardDifficulty>(() => {
-        if (globalThis?.document) {
-            const difficulty = document.cookie
+        const cookieSet = new Map<string, string>(
+            globalThis?.document?.cookie
                 .split("; ")
-                .find((item) => item.startsWith("difficulty="))
-                ?.split("=")[1]
-            return (difficulty as SudokuBoardDifficulty) ?? "easy"
-        }
-        return "easy"
+                .map((item) => item.split("=") as [string, string])
+        )
+
+        return (cookieSet.get("difficulty") as SudokuBoardDifficulty) ?? "easy"
     })
     const [canRestart, setCanRestart] = useState(true)
     const restartGameHandler = (difficulty: SudokuBoardDifficulty) => {

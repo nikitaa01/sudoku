@@ -5,24 +5,19 @@ import { cookies } from "next/headers"
 import GameSkeleton from "./GameSkeleton"
 
 export default async function ServerGame() {
-    const cookiesStore = await cookies()
-    const difficultyCookie = cookiesStore.get("difficulty")?.value as
-        | SudokuBoardDifficulty
-        | undefined
-    const gameCookie = cookiesStore.get("game")?.value
-    const res = getSudokuData({
-        game: gameCookie,
-        difficulty: difficultyCookie ?? "easy",
-    })
-    if (!res) return <GameSkeleton />
-    const { board, resolvedBoard, boardStr, difficulty } = res
+    const awaitedCookies = await cookies()
 
-    return (
-        <Game
-            board={board}
-            resolvedBoard={resolvedBoard}
-            boardStr={boardStr}
-            difficulty={difficulty}
-        />
-    )
+    const difficulty =
+        (awaitedCookies.get("difficulty")?.value as SudokuBoardDifficulty) ??
+        "easy"
+    const game = awaitedCookies.get("game")?.value as string
+
+    const res = getSudokuData({
+        game,
+        difficulty,
+    })
+
+    if (!res) return <GameSkeleton />
+
+    return <Game {...res} />
 }
