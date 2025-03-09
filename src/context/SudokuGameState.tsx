@@ -72,15 +72,13 @@ const SudokuGameStateContextProvider = ({
     }, [board])
 
     useEffect(() => {
-        if (
-            canRestart &&
-            (JSON.stringify(getInitialEachNumberLeft(board)) !==
-                JSON.stringify(eachNumberLeft) ||
-                errors > 0)
-        ) {
-            setCanRestart(false)
-        }
-    }, [eachNumberLeft, errors, canRestart, setCanRestart, board])
+        const sumInitial = getInitialEachNumberLeft(board).reduce(
+            (acc, curr) => acc + curr
+        )
+        const sumCurrent = eachNumberLeft.reduce((acc, curr) => acc + curr)
+
+        setCanRestart(!(sumInitial !== sumCurrent || errors > 0))
+    }, [eachNumberLeft, errors, canRestart, setCanRestart])
 
     useEffect(() => {
         const handlePause = () => {
