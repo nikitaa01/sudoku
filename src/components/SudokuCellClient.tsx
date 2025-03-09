@@ -1,49 +1,82 @@
-'use client'
+"use client"
 
 import { useSudokuActiveCellDataContext } from "@/context/SudokuActiveCellData"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-interface Props { index: number, value: number, correctValue: number, col: number, row: number }
+interface Props {
+    index: number
+    value: number
+    correctValue: number
+    col: number
+    row: number
+    board: number[][]
+}
 
-export default function SudokuCellClient({ value: valueProp, correctValue, col, row }: Props) {
+export default function SudokuCellClient({
+    value: valueProp,
+    correctValue,
+    col,
+    row,
+    board,
+}: Props) {
     const [value, setValue] = useState(valueProp)
     const data = useSudokuActiveCellDataContext()
+
+    useEffect(() => {
+        setValue(valueProp)
+    }, [board])
 
     const square = (() => Math.floor(col / 3) * 3 + Math.floor(row / 3))()
 
     const bgColor = (() => {
         if (data.col === col && data.row === row) {
-            return 'bg-blue-600/30'
-        } else if (data.col === col || data.row === row || data.square === square) {
-            return 'bg-blue-300/20'
+            return "bg-blue-600/30"
+        } else if (
+            data.col === col ||
+            data.row === row ||
+            data.square === square
+        ) {
+            return "bg-blue-300/20"
         } else {
-            return ''
+            return ""
         }
     })()
 
     const fontWeight = (() => {
         if (value !== 0 && value === data.num) {
-            return 'font-light bg-blue-600/30'
+            return "font-light bg-blue-600/30"
         } else {
-            return ''
+            return ""
         }
     })()
 
     const handleClick = () => {
-        data.setData({ col, row, square, num: value, correctValue, setValue, setData: data.setData })
+        data.setData({
+            col,
+            row,
+            square,
+            num: value,
+            correctValue,
+            setValue,
+            setData: data.setData,
+        })
     }
 
     return (
         <button
             aria-label={`sudoku cell ${col + 1} ${row + 1}`}
-            onKeyDown={e => {
-                if (e.key === ' ' || e.key === 'Spacebar') {
+            onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Spacebar") {
                     e.preventDefault()
                     e.stopPropagation()
                 }
             }}
             onClick={handleClick}
-            className={`h-full w-full text-2xl md:text-3xl text-black/80 flex justify-center items-center font-extralight transition-all duration-75 focus:outline-none ${bgColor} ${fontWeight} ${bgColor === '' && fontWeight === '' ? 'hover:bg-gray-200/80' : ''}`}
+            className={`h-full w-full text-2xl md:text-3xl text-black/80 flex justify-center items-center font-extralight transition-all duration-75 focus:outline-none ${bgColor} ${fontWeight} ${
+                bgColor === "" && fontWeight === ""
+                    ? "hover:bg-gray-200/80"
+                    : ""
+            }`}
         >
             {value === 0 ? (
                 ""

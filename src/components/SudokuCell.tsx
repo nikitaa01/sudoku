@@ -1,12 +1,46 @@
 import SudokuCellClient from "./SudokuCellClient"
 
-interface Props { index: number, value: number, correctValue: number, col: number, row: number }
+interface Props {
+    index: number
+    value: number
+    correctValue: number
+    col: number
+    row: number
+    board: number[][]
+}
 
-export default function SudokuCell({ index, value, correctValue, col, row }: Props) {
-    const leftBorder = col === 0 ? 'border-l-[2px]' : index % 3 === 0 ? 'border-l-[1px]' : 'border-l-[0.2px]'
-    const rightBorder = col === 8 ? 'border-r-[2px]' : index % 3 === 2 ? 'border-r-[1px]' : 'border-r-[0.2px]'
-    const topBorder = row === 0 ? 'border-t-[2px]' : index % 27 < 9 ? 'border-t-[1px]' : 'border-t-[0.2px]'
-    const bottomBorder = row === 8 ? 'border-b-[2px]' : index % 27 >= 18 ? 'border-b-[1px]' : 'border-b-[0.2px]'
+export default function SudokuCell({
+    index,
+    value,
+    correctValue,
+    col,
+    row,
+    board,
+}: Props) {
+    const leftBorder =
+        col === 0
+            ? "border-l-[2px]"
+            : index % 3 === 0
+            ? "border-l-[1px]"
+            : "border-l-[0.2px]"
+    const rightBorder =
+        col === 8
+            ? "border-r-[2px]"
+            : index % 3 === 2
+            ? "border-r-[1px]"
+            : "border-r-[0.2px]"
+    const topBorder =
+        row === 0
+            ? "border-t-[2px]"
+            : index % 27 < 9
+            ? "border-t-[1px]"
+            : "border-t-[0.2px]"
+    const bottomBorder =
+        row === 8
+            ? "border-b-[2px]"
+            : index % 27 >= 18
+            ? "border-b-[1px]"
+            : "border-b-[0.2px]"
 
     return (
         <div
@@ -18,6 +52,7 @@ export default function SudokuCell({ index, value, correctValue, col, row }: Pro
                 correctValue={correctValue}
                 col={col}
                 row={row}
+                board={board}
             />
         </div>
     )

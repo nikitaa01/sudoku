@@ -1,41 +1,59 @@
-'use client'
+"use client"
 
 import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
+import { useRouter } from "next/navigation"
 import { createContext, useContext, useState } from "react"
 
 interface RestartGameContext {
-    restartGame: (difficulty: SudokuBoardDifficulty) => void,
-    setRestartGame: (restartGame: (difficulty: SudokuBoardDifficulty) => void) => void,
-    difficulty: SudokuBoardDifficulty,
-    canRestart: boolean,
+    restartGame: (difficulty: SudokuBoardDifficulty) => void
+    difficulty: SudokuBoardDifficulty
+    canRestart: boolean
     setCanRestart: (canRestart: boolean) => void
 }
 
 const RestartGameContext = createContext<RestartGameContext>({
-    restartGame: () => { },
-    setRestartGame: () => { },
-    difficulty: 'easy',
+    restartGame: () => {},
+    difficulty: "easy",
     canRestart: true,
-    setCanRestart: () => { }
+    setCanRestart: () => {},
 })
 
 const useRestartGameContext = () => {
     const context = useContext(RestartGameContext)
 
     if (context === undefined) {
-        throw new Error('useRestartGameContext must be used within a RestartGameContextProvider')
+        throw new Error(
+            "useRestartGameContext must be used within a RestartGameContextProvider"
+        )
     }
 
     return context
 }
 
-const RestartGameContextProvider = ({ children }: {
-    children: React.ReactNode,
+const RestartGameContextProvider = ({
+    children,
+}: {
+    children: React.ReactNode
 }) => {
-    const [restartGame, setRestartGame] = useState<RestartGameContext['restartGame']>(() => () => { })
+    const router = useRouter()
+    const restartGame: RestartGameContext["restartGame"] = (difficulty) => {
+        if (document) {
+            // eslint-disable-next-line react-compiler/react-compiler
+            document.cookie = `difficulty=${difficulty}; path=/`
+        }
+
+        router.refresh()
+    }
+
     const [difficulty, setDifficulty] = useState<SudokuBoardDifficulty>(() => {
-        const difficulty = globalThis?.window?.location?.search?.split('difficulty=')[1]?.split('&')[0] as SudokuBoardDifficulty | undefined
-        return difficulty ?? 'easy'
+        if (globalThis?.document) {
+            const difficulty = document.cookie
+                .split("; ")
+                .find((item) => item.startsWith("difficulty="))
+                ?.split("=")[1]
+            return (difficulty as SudokuBoardDifficulty) ?? "easy"
+        }
+        return "easy"
     })
     const [canRestart, setCanRestart] = useState(true)
     const restartGameHandler = (difficulty: SudokuBoardDifficulty) => {
@@ -44,9 +62,15 @@ const RestartGameContextProvider = ({ children }: {
         setCanRestart(true)
     }
 
-
     return (
-        <RestartGameContext.Provider value={{ restartGame: restartGameHandler, setRestartGame, difficulty, canRestart, setCanRestart }}>
+        <RestartGameContext.Provider
+            value={{
+                restartGame: restartGameHandler,
+                difficulty,
+                canRestart,
+                setCanRestart,
+            }}
+        >
             {children}
         </RestartGameContext.Provider>
     )

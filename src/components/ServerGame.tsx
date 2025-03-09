@@ -1,23 +1,27 @@
 import Game from "@/components/Game"
 import { getSudokuData } from "@/controllers/sudokuBoard"
+import SudokuBoardDifficulty from "@/types/sudokuBoardDifficulty"
 import { cookies } from "next/headers"
-import SetServerRestartGame from "./SetServerRestartGame"
 
-export default async function ServerGame({ game }: { game?: string }) {
-    await cookies()
-    const res = getSudokuData({ game, difficulty: "easy" })
+export default async function ServerGame() {
+    const cookiesStore = await cookies()
+    const difficultyCookie = cookiesStore.get("difficulty")?.value as
+        | SudokuBoardDifficulty
+        | undefined
+    const gameCookie = cookiesStore.get("game")?.value
+    const res = getSudokuData({
+        game: gameCookie,
+        difficulty: difficultyCookie ?? "easy",
+    })
     if (!res) return null
     const { board, resolvedBoard, boardStr, difficulty } = res
 
     return (
-        <>
-            <SetServerRestartGame />
-            <Game
-                board={board}
-                resolvedBoard={resolvedBoard}
-                boardStr={boardStr}
-                difficulty={difficulty}
-            />
-        </>
+        <Game
+            board={board}
+            resolvedBoard={resolvedBoard}
+            boardStr={boardStr}
+            difficulty={difficulty}
+        />
     )
 }
