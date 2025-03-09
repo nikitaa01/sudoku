@@ -9,6 +9,8 @@ interface RestartGameContext {
     difficulty: SudokuBoardDifficulty
     canRestart: boolean
     setCanRestart: (canRestart: boolean) => void
+    restarting: boolean
+    setRestarting: (restarting: boolean) => void
 }
 
 const RestartGameContext = createContext<RestartGameContext>({
@@ -16,6 +18,8 @@ const RestartGameContext = createContext<RestartGameContext>({
     difficulty: "easy",
     canRestart: true,
     setCanRestart: () => {},
+    restarting: false,
+    setRestarting: () => {},
 })
 
 const useRestartGameContext = () => {
@@ -35,6 +39,8 @@ const RestartGameContextProvider = ({
 }: {
     children: React.ReactNode
 }) => {
+    const [restarting, setRestarting] = useState(false)
+
     const router = useRouter()
     const restartGame: RestartGameContext["restartGame"] = (difficulty) => {
         if (document) {
@@ -42,6 +48,7 @@ const RestartGameContextProvider = ({
             document.cookie = `difficulty=${difficulty}; path=/`
         }
 
+        setRestarting(true)
         router.refresh()
     }
 
@@ -69,6 +76,8 @@ const RestartGameContextProvider = ({
                 difficulty,
                 canRestart,
                 setCanRestart,
+                restarting,
+                setRestarting,
             }}
         >
             {children}

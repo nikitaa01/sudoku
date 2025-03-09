@@ -1,19 +1,25 @@
-'use client'
+"use client"
 
+import { useRestartGameContext } from "@/context/RestartGame"
 import { useSudokuGameStateContext } from "@/context/SudokuGameState"
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import PausedBanner from "./PausedBanner"
 
-export default function DiagonalDisplayGridAnimation() {
+export default function DiagonalDisplayGridAnimation({
+    board,
+}: {
+    board: number[][]
+}) {
     const { paused } = useSudokuGameStateContext()
+    const { restarting } = useRestartGameContext()
     const [renderPausedBanner, setRenderPausedBanner] = useState(false)
 
     useEffect(() => {
         if (!paused) {
             setRenderPausedBanner(false)
         }
-        const gridCels = document.querySelectorAll('#grid-cells > div')
+        const gridCels = document.querySelectorAll("#grid-cells > div")
         const grid = [
             [1],
             [2, 10],
@@ -31,26 +37,27 @@ export default function DiagonalDisplayGridAnimation() {
             [54, 62, 70, 78],
             [63, 71, 79],
             [72, 80],
-            [81]
+            [81],
         ]
         let i = 0
         for (const row of grid) {
             setTimeout(() => {
                 for (const num of row) {
                     const gridCel = gridCels[num - 1]
+                    if (!gridCel) continue
+
                     if (paused) {
-                        gridCel.classList.remove('scale-100')
-                        gridCel.classList.remove('opacity-100')
-                        gridCel.classList.add('scale-0')
-                        gridCel.classList.add('opacity-0')
+                        gridCel.classList.remove("scale-100")
+                        gridCel.classList.remove("opacity-100")
+                        gridCel.classList.add("scale-0")
+                        gridCel.classList.add("opacity-0")
                         continue
                     }
-                    gridCel.classList.remove('scale-0')
-                    gridCel.classList.remove('opacity-0')
-                    gridCel.classList.add('scale-100')
-                    gridCel.classList.add('opacity-100')
+                    gridCel.classList.remove("scale-0")
+                    gridCel.classList.remove("opacity-0")
+                    gridCel.classList.add("scale-100")
+                    gridCel.classList.add("opacity-100")
                 }
-
             }, i++ * 15)
         }
         let renderPausedBannerTimeout: NodeJS.Timeout
@@ -63,9 +70,9 @@ export default function DiagonalDisplayGridAnimation() {
             clearTimeout(renderPausedBannerTimeout)
             setRenderPausedBanner(false)
         }
-    }, [paused])
+    }, [paused, board, restarting])
 
-    const pausedBannerRoot = globalThis?.document?.getElementById('grid-cells')
+    const pausedBannerRoot = globalThis?.document?.getElementById("grid-cells")
 
     return renderPausedBanner
         ? createPortal(<PausedBanner />, pausedBannerRoot as HTMLElement)

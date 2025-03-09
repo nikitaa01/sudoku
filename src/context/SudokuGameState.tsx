@@ -32,7 +32,7 @@ const SudokuGameStateContext = createContext<SudokuGameStateContext>({
 
 const useSudokuGameStateContext = () => {
     const context = useContext(SudokuGameStateContext)
-    if (context === undefined) {
+    if (!context) {
         throw new Error(
             "useSudokuGameStateContext must be used within a SudokuGameStateContextProvider"
         )
