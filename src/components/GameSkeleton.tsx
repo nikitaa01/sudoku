@@ -11,37 +11,38 @@ export default function GameSkeleton() {
                     <Mistakes />
                     <Timer />
                 </div>
-                <div
-                    id="grid-cells"
-                    className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4"
-                >
-                    {new Array(9).fill(null).map((_, i) => {
-                        const colors = {
-                            0: "bg-blue-100",
-                            1: "bg-blue-50",
-                            2: "bg-blue-200",
-                            3: "bg-blue-200",
-                            4: "bg-blue-100",
-                            5: "bg-blue-50",
-                            6: "bg-blue-50",
-                            7: "bg-blue-200",
-                            8: "bg-blue-100",
-                        }
-
-                        if (i > 8 || i < 0) return null
-
-                        const index = i as keyof typeof colors
-
-                        return (
-                            <div
-                                key={i}
-                                className={`${colors[index]} rounded-md`}
-                            />
-                        )
-                    })}
-                </div>
+                <GameSkeletonGrid />
                 <SudokuActionButtonsRoot />
             </div>
         </main>
+    )
+}
+
+export function GameSkeletonGrid() {
+    return (
+        <div
+            id="grid-cells"
+            className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4"
+        >
+            {new Array(9).fill(null).map((_, i) => {
+                const colors = {
+                    0: "bg-blue-100",
+                    1: "bg-blue-50",
+                    2: "bg-blue-200",
+                    3: "bg-blue-200",
+                    4: "bg-blue-100",
+                    5: "bg-blue-50",
+                    6: "bg-blue-50",
+                    7: "bg-blue-200",
+                    8: "bg-blue-100",
+                }
+
+                if (i > 8 || i < 0) return null
+
+                const index = i as keyof typeof colors
+
+                return <div key={i} className={`${colors[index]} rounded-md`} />
+            })}
+        </div>
     )
 }

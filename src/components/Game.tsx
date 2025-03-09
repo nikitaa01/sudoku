@@ -28,11 +28,11 @@ export default function Game({
                                 <Mistakes />
                                 <Timer />
                             </div>
-                            <div
-                                id="grid-cells"
-                                className="grid grid-cols-9 grid-rows-9 relative"
-                            >
-                                <GameGrid>
+                            <GameGrid>
+                                <div
+                                    id="grid-cells"
+                                    className="grid grid-cols-9 grid-rows-9 relative"
+                                >
                                     {board.map((row, rowIndex) =>
                                         row.map((item, colIndex) => (
                                             <SudokuCell
@@ -50,8 +50,8 @@ export default function Game({
                                             />
                                         ))
                                     )}
-                                </GameGrid>
-                            </div>
+                                </div>
+                            </GameGrid>
                             <MessageContextProvider>
                                 <SudokuActionButtonsRoot />
                                 <CheckIsSolved />
