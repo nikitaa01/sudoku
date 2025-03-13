@@ -46,7 +46,6 @@ const RestartGameContextProvider = ({
         const difficultyCookie = `difficulty=${difficulty}`
         // eslint-disable-next-line react-compiler/react-compiler
         document.cookie = `${difficultyCookie}; path=/`
-        document.cookie = `game=; path=/`
 
         setRestarting(true)
         router.refresh()

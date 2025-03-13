@@ -17,13 +17,12 @@ import { UpdateCookies } from "./UpdateCookies"
 
 export default async function Game({
     board,
-    boardStr,
     difficulty,
     resolvedBoard,
-}: SudokuData & { boardStr: string }) {
+}: SudokuData) {
     return (
         <main className="w-screen h-dvh flex justify-center items-center">
-            <UpdateCookies game={boardStr} difficulty={difficulty} />
+            <UpdateCookies difficulty={difficulty} />
             <SetRestartingFalse board={board} />
             <EndGameModalContextProvider>
                 <SudokuActiveCellDataContextProvider board={board}>

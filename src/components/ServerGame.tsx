@@ -10,10 +10,8 @@ export default async function ServerGame() {
     const difficulty =
         (awaitedCookies.get("difficulty")?.value as SudokuBoardDifficulty) ??
         "easy"
-    const game = awaitedCookies.get("game")?.value as string
 
     const res = getSudokuData({
-        game,
         difficulty,
     })
 

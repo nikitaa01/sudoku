@@ -18,12 +18,9 @@ const resolveSudokuData = (
     }
 }
 
-const generateSudokuData = (
-    difficulty: SudokuBoardDifficulty
-): SudokuData & { boardStr: string } => {
+const generateSudokuData = (difficulty: SudokuBoardDifficulty): SudokuData => {
     const sudokuData = generateSudoku(difficulty)
-    const boardStr = btoa(JSON.stringify(sudokuData))
-    return { ...sudokuData, boardStr }
+    return sudokuData
 }
 
 const generateSudoku = (
@@ -159,24 +156,11 @@ const isValidMove = (
 
 export const getSudokuData = ({
     difficulty,
-    game,
 }: {
     difficulty: SudokuBoardDifficulty
-    game?: string
 }) => {
-    let sudokuData: SudokuData & { boardStr: string }
-    if (game) {
-        const resolveSudokuDataRes = resolveSudokuData(game)
-        if (!resolveSudokuDataRes.ok) {
-            const generatedSudokuData = generateSudokuData(difficulty)
-            sudokuData = generatedSudokuData
-        } else {
-            sudokuData = resolveSudokuDataRes.data
-        }
-    } else {
-        const generatedSudokuData = generateSudokuData(difficulty)
-        sudokuData = generatedSudokuData
-    }
+    const generatedSudokuData = generateSudokuData(difficulty)
+    const sudokuData = generatedSudokuData
     return sudokuData
 }
 
