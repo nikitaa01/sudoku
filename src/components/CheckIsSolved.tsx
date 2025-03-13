@@ -21,7 +21,6 @@ export default function CheckIsSolved() {
     useEffect(() => {
         setMessages([])
         if (isSolved === 0) {
-            setModalData((prev) => ({ ...prev, open: false }))
             return
         }
         if (isSolved === 1) {

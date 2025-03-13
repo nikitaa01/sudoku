@@ -1,7 +1,8 @@
 "use client"
 
 import Modal from "@/components/UI/Modal"
-import { createContext, useContext, useMemo, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { useRestartGameContext } from "./RestartGame"
 
 interface EndGameModalContext {
     setModalData: React.Dispatch<
@@ -41,6 +42,14 @@ const EndGameModalContextProvider = ({
         onCancel: () => {},
         modalChildren: null,
     })
+    const { restarting } = useRestartGameContext()
+
+    useEffect(() => {
+        if (restarting) {
+            setModalData((prev) => ({ ...prev, open: false }))
+        }
+    }, [restarting, setModalData])
+
     return (
         <EndGameModalContext.Provider value={{ setModalData }}>
             <Modal open={open} onCancel={onCancel}>
