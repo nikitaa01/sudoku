@@ -20,10 +20,10 @@ export default function GameSkeleton() {
 export function GameSkeletonGrid() {
     return (
         <>
-            <div className="fixed w-full inset-0 h-full opacity-50 z-[99999] bg-white" />
+            <div className="fixed w-full inset-0 h-full opacity-50 z-[19] bg-white" />
             <div
                 id="grid-cells"
-                className="z-[2] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4"
+                className="z-[19] w-[360px] h-[360px] md:w-[432px] md:h-[432px] grid grid-cols-3 grid-rows-3 animate-pulse gap-4"
             >
                 {new Array(9).fill(null).map((_, i) => {
                     const colors = {
