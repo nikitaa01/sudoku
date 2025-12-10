@@ -4,8 +4,6 @@ import ServerGame from "@/components/ServerGame"
 import { RestartGameContextProvider } from "@/context/RestartGame"
 import { Suspense } from "react"
 
-export const experimental_ppr = true
-
 export default function Home() {
     return (
         <RestartGameContextProvider>
